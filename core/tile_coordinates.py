@@ -28,14 +28,30 @@ class TileCoordinates:
 
         return tp
 
+    def get_tiles(self, point1, point2, zoom_from, zoom_to):
+        (z1, z2) = self.fix_order(zoom_from, zoom_to)
+        tile_points = []
+        for z in range(z1, z2+1):
+            tp1 = self.deg2num(point1, z)
+            tp2 = self.deg2num(point2, z)
+            tile_points.extend(self.get_tiles_between(tp1, tp2))
+        return tile_points
+
     def get_tiles_between(self, tp1, tp2):
         (n1, n2) = self.fix_order(tp1.n, tp2.n)
         (e1, e2) = self.fix_order(tp1.e, tp2.e)
 
+        tile_points = []
+
         for n in range(n1, n2+1):
-            print("range: " + str(n))
+            # print("range: " + str(n))
             for e in range(e1, e2+1):
-                print("    " + str(e) + "/" + str(n))
+                tp = TilePoint()
+                tp.add_coordinates(e, n, tp1.z)
+                tile_points.append(tp)
+                # print("    " + str(e) + "/" + str(n))
+
+        return tile_points
 
     def fix_order(self, numa, numb):
         if numa < numb:

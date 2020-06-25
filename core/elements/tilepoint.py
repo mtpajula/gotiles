@@ -51,11 +51,14 @@ class TilePoint(Element):
 
     def get_str(self):
         s = Element.get_str(self)
-        s += " e,n,z: "
+        s += " z,e,n: "
+        s += str(self.z) + ","
         s += str(self.e) + ","
-        s += str(self.n) + ","
-        s += str(self.z)
+        s += str(self.n)
         return s
+
+    def get_addr(self, path, filetype):
+        return path + str(self.z) + '/' + str(self.e) + '/' + str(self.n) + filetype
 
     def get_dictionary(self):
         d = Element.get_dictionary(self)

@@ -5,30 +5,27 @@ Holds core
 '''
 from core.elements.point import Point
 from core.tile_coordinates import TileCoordinates
-from core.tools import *
+from core.tile_download import TileDownload
 
 
 class Controller:
 
     def __init__(self):
         self.tilecoord = TileCoordinates()
+        self.download = TileDownload('https://tiles.kartat.kapsi.fi/peruskartta/', '.jpg')
 
-    def start(self):
-        zoom = 10
-        p = Point()
-        p.add_coordinates(25.72, 66.49)
+    def test(self):
+        p1 = Point()
+        p1.add_coordinates(25.7455, 66.511686)
+        p2 = Point()
+        p2.add_coordinates(25.8015, 66.48094)
 
-        tp1 = self.tilecoord.deg2num(p, zoom)
+        zoom_from = 1
+        zoom_to = 16
 
-        print('tileAddress: ' + str(zoom) + '/' + str(tp1.e) + '/' + str(tp1.n) + '.png')
-        #print('tileAddress: ' + add_leading_zeros(zoom, 4) + '/' + add_leading_zeros(tp.e, 4) + '/' + add_leading_zeros(tp.n, 4) + '.png')
+        tile_points = self.tilecoord.get_tiles(p1, p2, zoom_from, zoom_to)
 
-        p.add_coordinates(24.72, 65.49)
-
-        tp2 = self.tilecoord.deg2num(p, zoom)
-
-        print('tileAddress: ' + str(zoom) + '/' + str(tp2.e) + '/' + str(tp2.n) + '.png')
-        #print('tileAddress: ' + add_leading_zeros(zoom, 4) + '/' + add_leading_zeros(tp.e, 4) + '/' + add_leading_zeros(
-        #    tp.n, 4) + '.png')
-
-        self.tilecoord.get_tiles_between(tp1, tp2)
+        if self.download.download_tiles(tile_points):
+            print('\nTiles downloaded ok!\n')
+        else:
+            print('\nTiles download failed!\n')
