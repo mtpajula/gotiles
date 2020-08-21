@@ -12,20 +12,26 @@ class Controller:
 
     def __init__(self):
         self.tilecoord = TileCoordinates()
-        self.download = TileDownload('https://tiles.kartat.kapsi.fi/peruskartta/', '.jpg')
+        self.downloader = TileDownload('https://tiles.kartat.kapsi.fi/peruskartta/', '.jpg')
+        self.corners = []
+        self.zoom_from = 1
+        self.zoom_to = 16
 
-    def test(self):
-        p1 = Point()
-        p1.add_coordinates(25.7455, 66.511686)
-        p2 = Point()
-        p2.add_coordinates(25.8015, 66.48094)
+    def set_corner(self, lat, lon):
+        p = Point()
+        p.add_coordinates(lon, lat)
+        self.corners.append(p)
 
-        zoom_from = 1
-        zoom_to = 16
+    def set_zoom(self, zoom_from, zoom_to):
+        self.zoom_from = zoom_from
+        self.zoom_to = zoom_to
 
-        tile_points = self.tilecoord.get_tiles(p1, p2, zoom_from, zoom_to)
-
-        if self.download.download_tiles(tile_points):
-            print('\nTiles downloaded ok!\n')
+    def download_tiles(self):
+        if len(self.corners) == 2:
+            tile_points = self.tilecoord.get_tiles(self.corners[0], self.corners[1], self.zoom_from, self.zoom_to)
+            if self.downloader.download_tiles(tile_points):
+                print('\nTiles downloaded ok!\n')
+            else:
+                print('\nTiles download failed!\n')
         else:
-            print('\nTiles download failed!\n')
+            print('\nExactly two corner points needed!\n')
